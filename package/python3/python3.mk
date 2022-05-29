@@ -245,6 +245,39 @@ endef
 PYTHON3_POST_INSTALL_TARGET_HOOKS += PYTHON3_REMOVE_USELESS_FILES
 
 #
+# Remove unneeded modules
+#
+PYTHON3_TARGET_DIR=$(TARGET_DIR)/usr/lib/python$(PYTHON3_VERSION_MAJOR)
+PYTHON3_MINIMAL_MODULES=$(patsubst %,%.py,\
+	__future__ _collections_abc _py_abc _py_decimal _pyio _sitebuiltins \
+	_weakrefset abc argparse ast base64 bisect cProfile calendar \
+	codecs configparser contextlib copy copyreg datetime dis \
+	enum fnmatch functools genericpath getopt gettext hashlib heapq hmac \
+	inspect io keyword linecache locale mimetypes ntpath opcode operator \
+	os pkgutil platform plistlib posixpath pprint py_compile pyclbr \
+	pydoc queue quopri random re reprlib selectors shutil signal \
+	site socket socketserver sre_compile sre_constants sre_parse \
+	stat string stringprep struct subprocess sysconfig tempfile \
+	textwrap threading token tokenize traceback types typing \
+	uu uuid warnings weakref zipfile)
+PYTHON3_MINIMAL_DIRS=collections ctypes distutils email encodings html http \
+	importlib json lib-dynload logging site-packages urllib xml
+
+define PYTHON3_MINIMAL_INSTALLATION
+	find $(PYTHON3_TARGET_DIR) \
+		-maxdepth 1 -type d \
+		-not \( -path $(PYTHON3_TARGET_DIR) -o \
+		$(call finddirclauses,$(PYTHON3_TARGET_DIR),$(PYTHON3_MINIMAL_DIRS)) \) \
+		-exec rm -rf "{}" \;
+	find $(PYTHON3_TARGET_DIR) \
+		-maxdepth 1 -type f \
+		-not \( $(call findfileclauses,$(PYTHON3_MINIMAL_MODULES)) \) \
+		-exec rm -f "{}" \;
+endef
+
+PYTHON3_POST_INSTALL_TARGET_HOOKS += PYTHON3_MINIMAL_INSTALLATION
+
+#
 # Make sure libpython gets stripped out on target
 #
 define PYTHON3_ENSURE_LIBPYTHON_STRIPPED
