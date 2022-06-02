@@ -256,7 +256,7 @@ PYTHON3_MINIMAL_MODULES=$(patsubst %,%.py,\
 	inspect io keyword linecache locale mimetypes ntpath opcode operator \
 	os pkgutil platform plistlib posixpath pprint py_compile pyclbr \
 	pydoc queue quopri random re reprlib selectors shutil signal \
-	site socket socketserver sre_compile sre_constants sre_parse \
+	site socket socketserver sre_compile sre_constants sre_parse ssl \
 	stat string stringprep struct subprocess sysconfig tempfile \
 	textwrap threading token tokenize traceback types typing \
 	uu uuid warnings weakref zipfile)
